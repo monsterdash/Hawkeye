@@ -1,0 +1,46 @@
+<table>
+    <thead>
+        <tr>
+            <th>Task_Id</th>
+            <th>File_Id</th>
+            <th>Status</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for i in data %}
+        <tr>
+            <td>{{ i[0] }}</td>
+            <td>{{ i[1] }}</td>
+            <td>{{ i[2] }}</td>
+            <td>
+                <a href="javascript:void(0);" onclick="info('{{ i[1] }}')" title="详细信息"><i class="icon iconfont"></i></a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<script>
+     $(function(){
+            $('.menus-lab-servers-list').addClass('active');
+        });
+        function change_note(hostip,userx){
+            $.ajax({
+                url: '/detail',
+                type: 'POST',
+                data:{
+                    'about': hostip,
+                    'owner':userx
+                },
+                dataType: 'json',
+                timeout: 5000,
+                error: function(){
+                    alert('连接超时');
+                },
+                success: function( data ) {
+                     location.href ='/change_note';
+                }
+            });
+        }
+     }
+</script>
