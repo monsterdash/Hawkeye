@@ -1,12 +1,11 @@
 from peewee import *
 
-database = MySQLDatabase('mobei3', **{'port': 3306, 'host': '192.168.230.128', 'user': 'root', 'password': 'root'})
 
-
+database2 = MySQLDatabase('mobei3', **{'port': 3306, 'host': '192.168.230.128', 'user': 'root', 'password': 'root'})
 
 class BaseModel(Model):
     class Meta:
-        database = database
+            database = database2
 
 class Version(BaseModel):
     version = IntegerField()
@@ -52,4 +51,3 @@ class TaskidFile(BaseModel):
 
     class Meta:
         db_table = 'taskid_file'
-

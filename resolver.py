@@ -2,11 +2,11 @@ import  db_conn as db
 import conf
 
 class resolve():
-    def __init__(self,condition,con_value,order,page,desc):
+    def __init__(self,condition,order,page,desc):
         self.qbase = db.File.select(db.TaskidFile.file, db.File.id, db.File.status).join(db.TaskidFile)
         self.cbase = db.File.select().join(db.TaskidFile)
         self.condition = condition
-        self.con_value = con_value
+        # self.con_value = con_value
         self.order = order
         self.page = page
         self.desc = desc
@@ -14,12 +14,16 @@ class resolve():
         element = {'id': db.File.id, 'md5': db.File.md5, 'sha256': db.File.sha256, 'status': db.File.status,
                    'task_id':db.TaskidFile.task }
 
+        # def select_condition():
+        #         for i in range(0, len(self.condition)):
+        #             tj = element[condition[i]]
+        #             zh = con_value[i]
+        #             self.qbase = self.qbase.where(tj == zh)
+        #             self.cbase = self.qbase.where(tj == zh)
+
         def select_condition():
-                for i in range(0, len(self.condition)):
-                    tj = element[condition[i]]
-                    zh = con_value[i]
-                    self.qbase = self.qbase.where(tj == zh)
-                    self.cbase = self.qbase.where(tj == zh)
+            self.qbase = self.qbase.where(db.TaskidFile.id)
+            self.cbase = self.cbase.where(db.TaskidFile.id)
 
 
         def take_order():
