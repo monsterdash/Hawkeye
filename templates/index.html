@@ -8,11 +8,11 @@
         </tr>
     </thead>
     <tbody>
-    {% for i in data %}
+    {% for i in response.data %}
         <tr>
-            <td>{{ i[0] }}</td>
-            <td>{{ i[1] }}</td>
-            <td>{{ i[2] }}</td>
+            <td>{{ i.Task_id }}</td>
+            <td>{{ i.File_id }}</td>
+            <td>{{ i.Status }}</td>
             <td>
                 <a href="javascript:void(0);" onclick="info('{{ i[1] }}')" title="详细信息"><i class="icon iconfont"></i></a>
             </td>
@@ -20,6 +20,7 @@
     {% endfor %}
     </tbody>
 </table>
+总行数：{{ response.row_num }}
 <script>
      $(function(){
             $('.menus-lab-servers-list').addClass('active');
