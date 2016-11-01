@@ -54,17 +54,17 @@ def select():
         response = {"data":data,"row_num":rows}
         return response
 
-@app.route('/error_msg/<file_id>',methods=['GET'])
-def error_msg(file_id):
+@app.route('/error_msg/<taskid>',methods=['GET'])
+def error_msg(taskid):
     if request.method == "GET":
-        taskid = request.form["taskid"]
+        file_id = request.form["file_id"]
         db = router.router(taskid)
         row_num = db.ErrorMessage.select().where(db.ErrorMessage.file == file_id ).count()
         if row_num == 0:
             return "No error message"
         else:
             query = db.ErrorMessage.select(db.ErrorMessage.crash_flag,db.ErrorMessage.error_message,db.ErrorMessage.error_location,db.ErrorMessage.error_type ) \
-                    .where(db.ErrorMessage.file == taskid)
+                    .where(db.ErrorMessage.file == file_id)
             ret = db.execute(query)
             res=[]
             for i in ret:
