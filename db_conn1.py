@@ -5,7 +5,7 @@ database1 = MySQLDatabase('mobei3', **{'port': 3306, 'host': '192.168.230.128', 
 
 class BaseModel(Model):
     class Meta:
-            database = database1
+            database1 = database1
 
 class Version(BaseModel):
     version = IntegerField()

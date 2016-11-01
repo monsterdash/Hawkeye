@@ -1,8 +1,6 @@
 from flask import Flask,render_template,request
 from flask.views import  View
 import conf,router
-import resolver
-import db0_conn as db0
 
 app = Flask(__name__)
 
@@ -42,11 +40,10 @@ def select():
                 pass
             else:
                 return "error"
-        db = router.switch_db(form['condition'])
-        dx = resolver.resolve(form['codition'],form['order'],form['page'],form['desc'])
-        dx.parsing
-        query = dx.qbase
-        ret = db.database.execute(query)
+        dy = router.router(form['condition'])
+        dx = router.resolve(dy,form['codition'],form['order'],form['page'],form['desc'])
+        dx.parsing()
+        ret = dx.ret
         rows = dx.count
         data = []
         for i in ret:
@@ -57,20 +54,22 @@ def select():
         response = {"data":data,"row_num":rows}
         return response
 
-@app.route('/error_msg/<task_id>')
-def error_msg(task_id):
-    db = router.switch_db(task_id)
-    row_num = db.ErrorMessage.select().where(db.ErrorMessage.file == task_id).count()
-    if row_num == 0:
-        return "No error message"
-    else:
-        query = db.ErrorMessage.select(db.ErrorMessage.crash_flag,db.ErrorMessage.error_message,db.ErrorMessage.error_location,db.ErrorMessage.error_type ) \
-                .where(db.ErrorMessage.file == task_id)
-        ret = db.database.execute(query)
-        response=[]
-        for i in ret:
-            response.append(i)
-    return render_template('error_msg.html',data = response)
+@app.route('/error_msg/<file_id>',methods=['GET'])
+def error_msg(file_id):
+    if request.method == "GET":
+        taskid = request.form["taskid"]
+        db = router.router(taskid)
+        row_num = db.ErrorMessage.select().where(db.ErrorMessage.file == file_id ).count()
+        if row_num == 0:
+            return "No error message"
+        else:
+            query = db.ErrorMessage.select(db.ErrorMessage.crash_flag,db.ErrorMessage.error_message,db.ErrorMessage.error_location,db.ErrorMessage.error_type ) \
+                    .where(db.ErrorMessage.file == taskid)
+            ret = db.execute(query)
+            res=[]
+            for i in ret:
+                res.append(i)
+        return render_template('error_msg.html',data = res)
 
 
 if __name__ == '__main__':
