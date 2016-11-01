@@ -60,12 +60,16 @@ def select():
 @app.route('/error_msg/<task_id>')
 def error_msg(task_id):
     db = router.switch_db(task_id)
-    query = db.ErrorMessage.select(db.ErrorMessage.crash_flag,db.ErrorMessage.error_message,db.ErrorMessage.error_location,db.ErrorMessage.error_type ) \
-            .where(db.ErrorMessage.file == task_id)
-    ret = db.database.execute(query)
-    response=[]
-    for i in ret:
-        response.append(i)
+    row_num = db.ErrorMessage.select().where(db.ErrorMessage.file == task_id).count()
+    if row_num == 0:
+        return "No error message"
+    else:
+        query = db.ErrorMessage.select(db.ErrorMessage.crash_flag,db.ErrorMessage.error_message,db.ErrorMessage.error_location,db.ErrorMessage.error_type ) \
+                .where(db.ErrorMessage.file == task_id)
+        ret = db.database.execute(query)
+        response=[]
+        for i in ret:
+            response.append(i)
     return render_template('error_msg.html',data = response)
 
 

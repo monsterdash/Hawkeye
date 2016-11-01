@@ -1,4 +1,4 @@
-import db_conn1,db_conn2,db0_conn
+import db_conn1,db_conn2,db0_conn as db0
 
 def switch_db(condition):
     db_conn1.database1.connect()
