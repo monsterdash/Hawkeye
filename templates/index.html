@@ -25,13 +25,12 @@
      $(function(){
             $('.menus-lab-servers-list').addClass('active');
         });
-        function change_note(hostip,userx){
+        function change_note(file_id){
             $.ajax({
                 url: '/detail',
-                type: 'POST',
+                type: 'GET',
                 data:{
-                    'about': hostip,
-                    'owner':userx
+                    'file_id': file_id,
                 },
                 dataType: 'json',
                 timeout: 5000,
