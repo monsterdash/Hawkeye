@@ -19,14 +19,11 @@ class resolve():
     def __init__(self,db,condition,order,page,desc):
         self.db = db
         self.qbase = db.File.select(db.TaskidFile.file, db.File.id, db.File.status).join(db.TaskidFile)
-        self.cbase = db.File.select().join(db.TaskidFile)
         self.condition = condition
         # self.con_value = con_value
         self.order = order
         self.page = page
         self.desc = desc
-        self.count = ''
-        self.ret = ""
         element = {'id': db.File.id, 'md5': db.File.md5, 'sha256': db.File.sha256, 'status': db.File.status,
                    'task_id':db.TaskidFile.task }
 
@@ -39,19 +36,23 @@ class resolve():
 
     def select_condition(self):
         self.qbase = self.qbase.where(self.db.TaskidFile.id)
-        self.cbase = self.cbase.where(self.db.TaskidFile.id)
+
 
 
     def take_order(self):
         element={}
         tj = element[self.order]
-        if self.desc == True:
+        if self.desc == "":
             self.qbase = self.qbase.order_by(tj,self.desc())
         else:
             self.qbase = self.qbase.order_by(tj)
 
     def take_page(self):
-        self.qbase = self.qbase.paginate(self.page,conf.ROW_NUM)
+        if self.page =="":
+            self.qbase = self.qbase.paginate(1,conf.ROW_NUM)
+        else:
+            j = int(self.page)
+            self.qbase = self.qbase.paginate(j, conf.ROW_NUM)
 
 
     def parsing(self):
@@ -64,4 +65,3 @@ class resolve():
         else:
             self.qbase = self.qbase.order_by(self.db.File.id)
         self.take_page()
-        self.count = self.cbase.count()

@@ -1,11 +1,11 @@
 from peewee import *
 
 
-database2 = MySQLDatabase('mobei3', **{'port': 3306, 'host': '192.168.230.128', 'user': 'root', 'password': 'root'})
+database = MySQLDatabase('mobei3', **{'port': 3306, 'host': '192.168.230.128', 'user': 'root', 'password': 'root'})
 
 class BaseModel(Model):
     class Meta:
-            database2 = database2
+            database2 = database
 
 class Version(BaseModel):
     version = IntegerField()

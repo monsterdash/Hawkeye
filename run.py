@@ -1,4 +1,5 @@
-from flask import Flask,render_template,request
+#coding=utf-8
+from flask import Flask,render_template,request,jsonify
 from flask.views import  View
 import conf,router
 
@@ -36,40 +37,66 @@ def select():
         args=['condition','order','page','desc']
         form = request.values.to_dict()
         for i in args:
-            if form.haskey(i):
+            if i in form:
                 pass
             else:
-                return "error"
+                form[i] = ""
         dy = router.router(form['condition'])
-        dx = router.resolve(dy,form['codition'],form['order'],form['page'],form['desc'])
+        dx = router.resolve(dy,form['condition'],form['order'],form['page'],form['desc'])
         dx.parsing()
-        ret = dx.ret
-        rows = dx.count
+        q = dx.qbase
+        ret = dy.database.execute(q)
+        rows = 0
         data = []
         for i in ret:
             # 翻译status，字典在conf中
             sta0 = i[2]
             stat = conf.stadic[sta0]
             data.append({"Task_id":i[0],"File_id":i[1],"Status":stat})
-        response = {"data":data,"row_num":rows}
-        return response
+            rows = rows +1
+        det = {"data":data,"row_num":rows}
+        return jsonify(det)
 
-@app.route('/error_msg/<taskid>',methods=['GET'])
-def error_msg(taskid):
-    if request.method == "GET":
+
+@app.route('/test')
+def test():
+    import db_conn1
+    d=[]
+    c = db_conn1.ErrorMessage.select().where(db_conn1.ErrorMessage.file == "1")
+    for i in c:
+        d.append(i)
+    return d
+
+
+
+
+
+@app.route('/error_msg',methods=['POST'])
+def error_msg():
+    if request.method == "POST":
         file_id = request.form["file_id"]
-        db = router.router(taskid)
-        row_num = db.ErrorMessage.select().where(db.ErrorMessage.file == file_id ).count()
+        task_id = request.form["task_id"]
+        db = router.router(task_id)
+        query = db.ErrorMessage.select(db.ErrorMessage.crash_flag, db.ErrorMessage.error_message,
+                                       db.ErrorMessage.error_location, db.ErrorMessage.error_type) \
+                                        .where(db.ErrorMessage.file == file_id)
+        ret = db.database1.execute(query)
+        res = {"data":[]}
+        row_num = 0
+        for i in ret:
+            tm = {"crash_flag":i[0],"error_msg":i[1],"error_location":i[2],"error_type":i[3]}
+            res['data'].append(tm)
+            row_num = row_num + 1
         if row_num == 0:
             return "No error message"
         else:
-            query = db.ErrorMessage.select(db.ErrorMessage.crash_flag,db.ErrorMessage.error_message,db.ErrorMessage.error_location,db.ErrorMessage.error_type ) \
-                    .where(db.ErrorMessage.file == file_id)
-            ret = db.execute(query)
-            res=[]
-            for i in ret:
-                res.append(i)
-        return render_template('error_msg.html',data = res)
+            return render_template('error_msg.html', data=res)
+
+
+
+
+
+
 
 
 if __name__ == '__main__':

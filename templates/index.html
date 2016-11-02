@@ -21,26 +21,13 @@
     </tbody>
 </table>
 总行数：{{ response.row_num }}
-<script>
-     $(function(){
-            $('.menus-lab-servers-list').addClass('active');
-        });
-        function change_note(file_id){
-            $.ajax({
-                url: '/detail',
-                type: 'GET',
-                data:{
-                    'file_id': file_id,
-                },
-                dataType: 'json',
-                timeout: 5000,
-                error: function(){
-                    alert('连接超时');
-                },
-                success: function( data ) {
-                     location.href ='/change_note';
-                }
-            });
-        }
-     }
-</script>
+<form method="post" action="/error_msg">
+    task id<input type="text" name='task_id'>
+    file id<input type="text" name="file_id">
+    <input type="submit"  >
+
+</form>
+<form method="get" action="/select">
+    task id<input type="text" name='condition'>
+    <input type="submit"  >
+</form>

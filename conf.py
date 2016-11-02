@@ -1,4 +1,4 @@
-
+#coding=utf-8
 ROW_NUM = 25
 
 stadic = {1: "分析异常",
