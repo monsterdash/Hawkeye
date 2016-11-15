@@ -1,7 +1,7 @@
 from peewee import *
 
 
-database = MySQLDatabase('mobei3', **{'port': 3306, 'host': '192.168.230.128', 'user': 'root', 'password': 'root'})
+database = MySQLDatabase('mobei3', **{'port': 3306, 'host': '192.168.10.129', 'user': 'wcj', 'password': 'something'})
 
 class BaseModel(Model):
     class Meta:
@@ -14,10 +14,17 @@ class Version(BaseModel):
         db_table = 'version'
 
 class File(BaseModel):
+    add_time = BigIntegerField()
+    analysistime = BigIntegerField()
+    buildirtime = BigIntegerField()
+    decompiletime = BigIntegerField()
     filepath = CharField()
+    finishedtime = BigIntegerField()
+    formatime = BigIntegerField()
     md5 = CharField()
     sha256 = CharField()
     status = IntegerField()
+    unziptime = BigIntegerField()
     updatetime = BigIntegerField()
     version = ForeignKeyField(db_column='version', rel_model=Version, to_field='id')
 
@@ -28,6 +35,7 @@ class File(BaseModel):
         )
 
 class ErrorMessage(BaseModel):
+    add_time = BigIntegerField()
     crash_flag = IntegerField()
     error_location = CharField()
     error_message = CharField()
@@ -37,7 +45,16 @@ class ErrorMessage(BaseModel):
     class Meta:
         db_table = 'error_message'
 
+class ErrorTask(BaseModel):
+    add_time = BigIntegerField()
+    error_message = CharField()
+    task = CharField(db_column='task_id')
+
+    class Meta:
+        db_table = 'error_task'
+
 class Result(BaseModel):
+    add_time = BigIntegerField()
     file = ForeignKeyField(db_column='file_id', rel_model=File, to_field='id')
     result = TextField()
 
@@ -45,9 +62,12 @@ class Result(BaseModel):
         db_table = 'result'
 
 class TaskidFile(BaseModel):
+    add_time = BigIntegerField()
     file = ForeignKeyField(db_column='file_id', rel_model=File, to_field='id')
     scan_app_url = TextField()
     task = CharField(db_column='task_id', unique=True)
+    update_time = BigIntegerField()
+    worker = CharField(db_column='worker_id')
 
     class Meta:
         db_table = 'taskid_file'

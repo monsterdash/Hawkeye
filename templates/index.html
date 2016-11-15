@@ -1,33 +1,310 @@
-<table>
-    <thead>
-        <tr>
-            <th>Task_Id</th>
-            <th>File_Id</th>
-            <th>Status</th>
-            <th>Details</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for i in response.data %}
-        <tr>
-            <td>{{ i.Task_id }}</td>
-            <td>{{ i.File_id }}</td>
-            <td>{{ i.Status }}</td>
-            <td>
-                <a href="javascript:void(0);" onclick="info('{{ i[1] }}')" title="详细信息"><i class="icon iconfont"></i></a>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-总行数：{{ response.row_num }}
-<form method="post" action="/error_msg">
-    task id<input type="text" name='task_id'>
-    file id<input type="text" name="file_id">
-    <input type="submit"  >
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>支付宝接口监控</title>
+	<link rel="stylesheet" href="../static/css/buju.css" />
 
-</form>
-<form method="get" action="/select">
-    task id<input type="text" name='condition'>
-    <input type="submit"  >
-</form>
+
+</head>
+<body>
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/js/jsapi.js"></script>
+<script type="text/javascript" src="../static/js/corechart.js"></script>
+<script type="text/javascript" src="../static/js/jquery.gvChart-1.0.1.min.js"></script>
+<script type="text/javascript" src="../static/js/jquery.ba-resize.min.js"></script>
+<script type="text/javascript" src="../static/js/echarts.simple.min.js"></script>
+
+<div class="info_tab">
+    <table>
+		<thead>
+			<tr>
+				<th width="150"></th>
+				<th width="100"></th>
+				<th width="150"></th>
+				<th width="100"></th>
+			</tr>
+		</thead>
+		<tbody>
+        <tr>
+            <td>当天最长等待时间:</td>
+            <td>{{ data["waiting_time_max_today"] }} ms</td>
+            <td>历史最长等待时间:</td>
+            <td>{{ data["waiting_time_max_history"] }} ms</td>
+        </tr>
+        <tr>
+            <td>当天分析成功数:</td>
+            <td>{{ data["sus_today"] }}</td>
+            <td>历史分析成功总数:</td>
+            <td>{{ data["sus_history"] }}</td>
+        </tr>
+        <tr>
+            <td>当天分析失败数:</td>
+            <td>{{ data["fail_today"] }}</td>
+            <td>历史分析失败总数：</td>
+            <td>{{ data["fail_history"] }}</td>
+        </tr>
+        <tr>
+            <td>当日下载>5分钟任务数量:</td>
+            <td>{{ data["download_time_count_history"] }}</td>
+            <td>历史下载>5分钟任务数量</td>
+            <td>{{ data["download_time_count_today"] }}</td>
+        </tr>
+		</tbody>
+    </table>
+</div>
+<div class="search_form">
+	<b>TASK ID: </b><input type="text" name='condition' size="100"  id="search" >
+	<input type="button" value="搜索Task ID"  onclick="search_taskid()">
+</div>
+<div class="pending" id="pending0" >
+<h4>等待处理任务列表：</h4>
+	<table>
+		<thead>
+			<tr>
+				<th width="200"> Task_Id</th>
+				<th width="100">添加时间</th>
+				<th width="300">扫描app_url</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for i in pendings: %}
+			<tr>
+				<td>{{ i.Task_id}}</td>
+				<td>{{ i.add_time }}</td>
+				<td>{{ i.scan_app_url }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+<div class="read_done"><a href="./done_task">查看已完成任务</a></div>
+
+<div class="chart_bing" style="width:600px;margin:0 0;">
+
+		   <table id='myTable5'>
+				<caption>当日分析时间汇总：</caption>
+				<thead>
+					<tr>
+						<th></th>
+						<th>< 1分钟</th>
+						<th>1-5分钟</th>
+						<th>5-30分钟</th>
+						<th>30分钟以上</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>{{ data["sus_today"] }}</th>
+						<td>{{ data["less1_today"] }}</td>
+						<td>{{ data["One_to_Five_today"] }}</td>
+						<td>{{ data["Five_to_Thirty_today"] }}</td>
+						<td>{{ data["MoreThirty_today"] }}</td>
+					</tr>
+				</tbody>
+		   </table>
+</div>
+<div class="chart_bing2" style="width:600px;margin:0 0;">
+		<table id='myTable1'>
+			   <caption>历史分析时间汇总：</caption>
+				<thead>
+					<tr>
+						<th></th>
+						<th>< 1分钟</th>
+						<th>1-5分钟</th>
+						<th>5-30分钟</th>
+						<th>30分钟以上</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>{{ data["sus_history"] }}</th>
+						<td>{{ data["less1_history"] }}</td>
+						<td>{{ data["One_to_Five_history"] }}</td>
+						<td>{{ data["Five_to_Thirty_history"] }}</td>
+						<td>{{ data["MoreThirty_history"] }}</td>
+					</tr>
+				</tbody>
+		</table>
+</div>
+
+
+<div id="task" class="taskid_data">
+		<table>
+			<thead>
+			<tr>
+				<th width="400" align="left">Task_ID</th>
+				<th width="200" align="left">Status</th>
+			</tr>
+			</thead>
+			<tbody id="task_detail">
+
+			</tbody>
+		</table>
+</div>
+<div id="main" class="chart_xian" style="width: 300px;height:200px;"></div>
+<div class="err_msg" id="err_msg">
+	<table>
+		<thead>
+			<tr>
+				<th>Crash Flag</th>
+				<th>Error Message</th>
+				<th>Error Location</th>
+				<th>Error Type</th>
+			</tr>
+		</thead>
+		<tbody id="err_body">
+
+		</tbody>
+	</table>
+</div>
+
+</body>
+
+<script type="text/javascript">
+$('#task').hide();
+$('#err_msg').hide();
+function Trim(str){
+	return str.replace(/(^\s*)|(\s*$)/g, "");
+}
+
+gvChartInit();
+$(document).ready(function(){
+	$('#myTable5').gvChart({
+		chartType: 'PieChart',
+		gvSettings: {
+			vAxis: {title: 'No of players'},
+			hAxis: {title: 'Month'},
+			width: 360,
+			height: 210
+		}
+	});
+});
+
+gvChartInit();
+$(document).ready(function(){
+		$('#myTable1').gvChart({
+			chartType: 'PieChart',
+			gvSettings: {
+			vAxis: {title: 'No of players'},
+			hAxis: {title: 'Month'},
+			width: 360,
+			height: 210
+		}
+	});
+});
+
+
+function search_taskid(){
+	var taskid;
+	taskid = $("#search").val();
+	taskid = Trim(taskid);
+    	$.ajax({
+        	url: '/select',
+            type: 'get',
+            data:{
+            	'condition': taskid
+            },
+            dataType: 'json',
+            timeout: 5000,
+            error: function(){
+                alert('连接超时');
+            },
+			success: function( data ) {
+				if(data.error_code == 'success'){
+					succFunction(data);
+				}
+				else{
+					alert("搜索不到！")
+				}
+
+            }
+        });
+}
+
+function succFunction( data ){
+	if(data.error_row_num != "none"){
+		$('#err_msg').show();
+			for(i=0;i<data.err_info.length;i++){
+				error_body=error_body+'<tr><td>'+data.err_info[i].crash_flag+'</td><td>'+data.err_info[i].error_msg+'</td><td>'+data.err_info[i].error_location+'</td><td>'+data.err_info[i].error_type+'</td><tr>'
+			}
+		$('#err_body').html(err_body);
+		$('#err_msg').show();
+	}
+	res = '<tr><td>'+data.task_data[0].Task_id +'</td><td>'+data.task_data[0].Status +'</td></tr>';
+	$('#task').show();
+	$('#task_detail').html(res);
+}
+
+
+var myChart = echarts.init(document.getElementById('main'));
+option = {
+
+    tooltip : {
+        trigger: 'axis'
+    },
+
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : false,
+            data : ['5天前','4天前','3天前','2天前','前天','昨天','今天']
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            name:'7日提交',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {}},
+            data:[
+            10,
+            {{ task_day_before5 }},
+            {{ task_day_before4 }},
+            {{ task_day_before3 }},
+            {{ task_day_before2 }},
+            {{ task_day_before1 }},
+            {{ task_day_before0 }},
+            ]
+        },
+        {
+            name:'7日处理',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {}},
+            data:[
+            {{ deal_day_before6 }},
+            {{ deal_day_before5 }},
+            {{ deal_day_before4 }},
+            {{ deal_day_before3 }},
+            {{ deal_day_before2 }},
+            {{ deal_day_before1 }},
+            10,
+            ]
+        },
+
+    ]
+};
+myChart.setOption(option);
+
+
+</script>
+
+
+</html>

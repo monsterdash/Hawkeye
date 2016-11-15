@@ -8,7 +8,11 @@ def router(condition):
         db = db_conn1
         for i in ret:
             sea = i[0]
-            if sea  == "MTkyLjE2OC4xMC4xMjc=":
+
+
+
+
+            if sea  == "MTkyLjE2OC4xMC4xMjk=":
                 db = db_conn1
             else:
                 db = db_conn2
@@ -18,7 +22,7 @@ def router(condition):
 class resolve():
     def __init__(self,db,condition,order,page,desc):
         self.db = db
-        self.qbase = db.File.select(db.TaskidFile.file, db.File.id, db.File.status).join(db.TaskidFile)
+        self.qbase = db.File.select(db.TaskidFile.task, db.File.id, db.File.status).join(db.TaskidFile)
         self.condition = condition
         # self.con_value = con_value
         self.order = order
@@ -35,7 +39,7 @@ class resolve():
         #             self.cbase = self.qbase.where(tj == zh)
 
     def select_condition(self):
-        self.qbase = self.qbase.where(self.db.TaskidFile.id)
+        self.qbase = self.qbase.where(self.db.TaskidFile.task == self.condition)
 
 
 
