@@ -1,6 +1,6 @@
 
 import db0_conn as db0,db_conn1 as db1,db_conn2 as db2
-import base64,operator,time
+import base64,operator,time,conf
 
 def pending_item():
     items=[]
@@ -26,6 +26,40 @@ def done_task():
         url64 = base64_dec(i[2])
         ctime = time_change(i[1])
         data.append({"task_id":i[0],"add_time":ctime,"scan_app_url":url64})
+    data = sorted(data, key=operator.itemgetter('add_time'),reverse = True)
+    return data
+
+def error_task():
+    data = []
+    query1 = db1.File.select(db1.TaskidFile.task,db1.TaskidFile.add_time,db1.TaskidFile.scan_app_url).join(db1.TaskidFile).where(db1.File.status == "1")
+    query2 = db2.File.select(db2.TaskidFile.task,db2.TaskidFile.add_time,db2.TaskidFile.scan_app_url).join(db2.TaskidFile).where(db2.File.status == "1")
+    ret1 = db1.database.execute(query1)
+    ret2 = db2.database.execute(query2)
+    for i in ret1:
+        ctime = time_change(i[1])
+        data.append({"task_id":i[0],"add_time":ctime})
+    for i in ret2:
+        ctime = time_change(i[1])
+        data.append({"task_id":i[0],"add_time":ctime})
+    data = sorted(data, key=operator.itemgetter('add_time'),reverse = True)
+    return data
+
+def working_task():
+    data = []
+    query1 = db1.File.select(db1.TaskidFile.task,db1.TaskidFile.add_time,db1.TaskidFile.scan_app_url,db1.File.status).join(db1.TaskidFile).where((db1.File.status < "100000")&(db1.File.status >"100000"))
+    query2 = db2.File.select(db2.TaskidFile.task,db2.TaskidFile.add_time,db2.TaskidFile.scan_app_url,db2.File.status).join(db2.TaskidFile).where((db2.File.status < "100000")&(db2.File.status >"100000"))
+    ret1 = db1.database.execute(query1)
+    ret2 = db2.database.execute(query2)
+    for i in ret1:
+        url64 = base64_dec(i[2])
+        ctime = time_change(i[1])
+        status = conf.stadic[i[3]]
+        data.append({"task_id":i[0],"add_time":ctime,"status":status,"scan_app_url":url64})
+    for i in ret2:
+        url64 = base64_dec(i[2])
+        ctime = time_change(i[1])
+        status = conf.stadic[i[3]]
+        data.append({"task_id":i[0],"add_time":ctime,"status":status,"scan_app_url":url64})
     data = sorted(data, key=operator.itemgetter('add_time'),reverse = True)
     return data
 

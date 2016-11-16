@@ -4,87 +4,47 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>支付宝接口监控</title>
 	<link rel="stylesheet" href="../static/css/buju.css" />
-
+    <script type="text/javascript" src="../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/js/run.js"></script>
+    <script type="text/javascript" src="../static/js/echarts.min.js"></script>
 
 </head>
 <body>
-<script type="text/javascript" src="../static/js/jquery.min.js"></script>
-<script type="text/javascript" src="../static/js/jsapi.js"></script>
-<script type="text/javascript" src="../static/js/corechart.js"></script>
-<script type="text/javascript" src="../static/js/jquery.gvChart-1.0.1.min.js"></script>
-<script type="text/javascript" src="../static/js/jquery.ba-resize.min.js"></script>
-<script type="text/javascript" src="../static/js/echarts.min.js"></script>
 
-<div class="info_tab">
-    <table>
-		<thead>
-			<tr align="center">
-				<th width="150"></th>
-				<th width="250"></th>
-				<th width="150"></th>
-				<th width="250"></th>
-			</tr>
-		</thead>
-		<tbody>
-        <tr align="center">
-            <td>当天最长等待时间:</td>
-            <td>{{ data["waiting_time_max_today"] }} ms</td>
-            <td>历史最长等待时间:</td>
-            <td>{{ data["waiting_time_max_history"] }} ms</td>
-        </tr>
-        <tr align="center">
-            <td>当天分析成功数:</td>
-            <td>{{ data["sus_today"] }}</td>
-            <td>历史分析成功总数:</td>
-            <td>{{ data["sus_history"] }}</td>
-        </tr>
-        <tr align="center">
-            <td>当天分析失败数:</td>
-            <td>{{ data["fail_today"] }}</td>
-            <td>历史分析失败总数：</td>
-            <td>{{ data["fail_history"] }}</td>
-        </tr>
-        <tr align="center">
-            <td>当日下载>5分钟任务数量:</td>
-            <td>{{ data["download_time_count_history"] }}</td>
-            <td>历史下载>5分钟任务数量</td>
-            <td>{{ data["download_time_count_today"] }}</td>
-        </tr>
-		</tbody>
-    </table>
-</div>
-<div class="search_form">
-	<b>TASK ID: </b><input type="text" name='condition' size="100"  id="search" >
-	<input type="button" value="搜索Task ID"  onclick="search_taskid()">
-</div>
-<div class="pending" id="pending0" >
-<h4>等待处理任务列表：</h4>
-	<table>
-		<thead>
-			<tr>
-				<th width="200"> Task_Id</th>
-				<th width="100">添加时间</th>
-				<th width="300">扫描app_url</th>
-			</tr>
-		</thead>
-		<tbody>
-		{% for i in pendings: %}
-			<tr>
-				<td>{{ i.Task_id}}</td>
-				<td>{{ i.add_time }}</td>
-				<td>{{ i.scan_app_url }}</td>
-			</tr>
-		{% endfor %}
-		</tbody>
-	</table>
-</div>
-<div class="read_done"><a href="./done_task">查看已完成任务</a></div>
-
-
-
-
-<div id="task" class="taskid_data">
-		<table>
+    <div class="layout mar-auto">
+        <a name="top"></a>
+        <div class="title"><b class="jiahao">＋</b>时间汇总</div>
+        <div class="clear mar-t-20">
+            <div id="bing1" class="bing1 fl" style="width: 550px;height:300px;"></div>
+            <div id="bing2" class="bing2 fr" style="width: 550px;height:300px;"></div>
+        </div>
+        <div class="line"></div>
+        <div class="title"><b class="jiahao">＋</b>近期动态</div>
+        <div id="zhexian" class="chart_xian" style="width: 900px;height:300px;"></div>
+        <div class="line"></div>
+        <div class="title"><b class="jiahao">＋</b>概况总会</div>
+        <div class="info_tab clear">
+            <table class="l-table fl">
+                <tr><td width="200">当天最长等待时间:</td><td>{{ data["waiting_time_max_today"] }} ms</td></tr>
+                <tr><td>当天分析成功数:</td><td>{{ data["sus_today"] }}</td></tr>
+                <tr><td>当天分析失败数:</td><td>{{ data["fail_today"] }}</td></tr>
+                <tr><td>当日下载>5分钟任务数量:</td><td>{{ data["download_time_count_history"] }}</td></tr>
+            </table>
+            <table class="l-table fr">
+                <tr><td width="200">历史最长等待时间:</td><td>{{ data["waiting_time_max_history"] }} ms</td></tr>
+                <tr><td>历史分析成功总数:</td><td>{{ data["sus_history"] }}</td></tr>
+                <tr><td>历史分析失败总数:</td><td>{{ data["fail_history"] }}</td></tr>
+                <tr><td>历史下载>5分钟任务数量:</td><td>{{ data["download_time_count_today"] }}</td></tr>
+            </table>
+        </div>
+        <div class="line"></div>
+        <div class="title"><b class="jiahao">＋</b>任务搜索</div>
+        <div class="search_form">
+            <b>TASK ID: </b><input type="text" name='condition' size="100"  id="search" >
+            <input type="button" value="搜索Task ID"  onclick="search_taskid()">
+        </div>
+        <div id="task" class="taskid_data">
+		<table width="90%" class="mar-auto">
 			<thead>
 			<tr>
 				<th width="400" align="left">Task_ID</th>
@@ -95,34 +55,129 @@
 
 			</tbody>
 		</table>
-</div>
+        </div>
+        <div  id="err_msg" class="taskid_data">
+            <table width="90%" class="mar-auto" >
+                <thead>
+                    <tr>
+                        <th>Crash Flag</th>
+                        <th>Error Message</th>
+                        <th>Error Location</th>
+                        <th>Error Type</th>
+                    </tr>
+                </thead>
+                <tbody id="err_body">
 
-<div id="zhexian" class="chart_xian" style="width: 500px;height:200px;"></div>
+                </tbody>
+            </table>
+        </div>
+        <div class="line"></div>
+        <div class="title"><b class="jiahao">＋</b>等待队列</div>
+        <div class="pending" >
+            <table width="90%" class="mar-auto">
+                <thead>
+                    <tr>
+                        <th width="220"> Task_Id</th>
+                        <th width="180">添加时间</th>
+                        <th>Scan_App_URL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in pendings: %}
+                    <tr>
+                        <td>{{ i.Task_id}}</td>
+                        <td>{{ i.add_time }}</td>
+                        <td>{{ i.scan_app_url }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="line"></div>
+        <div class="title"><b class="jiahao">＋</b>处理中任务</div>
+        <div class="pending" id="working" >
+            <table width="90%" class="mar-auto">
+                <thead>
+                    <tr>
+                        <th width="220">Task_id</th>
+                        <th width="180">添加时间</th>
+                        <th width="180">处理状态</th>
+                        <th>Scan_App_URL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in working_task %}
+                    <tr>
+                        <td>{{ i.task_id }}</td>
+                        <td>{{ i.add_time }}</td>
+                        <td>{{ i.status }}</td>
+                        <td>{{ i.scan_app_url }}</td>
+                    </tr>
 
-<div id="bing1" class="bing1" style="width: 400px;height:300px;"></div>
-<div id="bing2" class="bing2" style="width: 400px;height:300px;"></div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+                <div class="line"></div>
+        <div class="title" ><b class="jiahao">＋</b>失败任务</div>
+        <div class="pending" id="error_div" >
+            <table width="90%" class="mar-auto">
+                <thead>
+                    <tr>
+                        <th width="220">Task_id</th>
+                        <th width="180">添加时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in error_task %}
+                    <tr>
+                        <td>{{ i.task_id }}</td>
+                        <td>{{ i.add_time }}</td>
+                    </tr>
 
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="line"></div>
+        <div class="title" id="done" ><b class="jiahao">＋</b>已结完成任务</div>
+        <div class="pending" id="done_div">
+            <table width="90%" class="mar-auto">
+                <thead>
+                    <tr>
+                        <th width="220">Task_id</th>
+                        <th width="180">添加时间</th>
+                        <th>Scan_App_URL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in done_task %}
+                    <tr>
+                        <td>{{ i.task_id }}</td>
+                        <td>{{ i.add_time }}</td>
+                        <td>{{ i.scan_app_url }}</td>
+                    </tr>
 
+                    {% endfor %}
+                </tbody>
 
-<div class="err_msg" id="err_msg">
-	<table>
-		<thead>
-			<tr>
-				<th>Crash Flag</th>
-				<th>Error Message</th>
-				<th>Error Location</th>
-				<th>Error Type</th>
-			</tr>
-		</thead>
-		<tbody id="err_body">
-
-		</tbody>
-	</table>
-</div>
+            </table>
+        </div>
+    </div>
+<div class="fudong"><a href="#top"><img src="../static/image/up.png" width="10%" height="10%"></a></div>
 
 </body>
 
 <script type="text/javascript">
+$(document).ready(function(){
+$(".title").click(function(){
+    $(this).next().slideToggle("slow");
+    $(this).children().toggle();
+  });
+});
+$('.jiahao').hide();
+$('.pending').hide();
+$('.pending').prev().children().show();
 $('#task').hide();
 $('#err_msg').hide();
 function Trim(str){
@@ -209,12 +264,6 @@ option = {
 };
 myChart.setOption(option);
 
-
-
-
-
-
-
 function search_taskid(){
 	var taskid;
 	taskid = $("#search").val();
@@ -241,7 +290,6 @@ function search_taskid(){
             }
         });
 }
-
 function succFunction( data ){
 	if(data.error_row_num != "none"){
 		$('#err_msg').show();
@@ -255,7 +303,6 @@ function succFunction( data ){
 	$('#task').show();
 	$('#task_detail').html(res);
 }
-
 
 var myChart = echarts.init(document.getElementById('zhexian'))
 option = {
@@ -326,7 +373,6 @@ option = {
         },
     ]
 };
-
 myChart.setOption(option);
 
 

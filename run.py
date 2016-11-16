@@ -40,7 +40,10 @@ class Index(View):
         data["deal_day_before5"] = int(redis_con.r.get("deal_day_before5"))
         data["deal_day_before6"] = int(redis_con.r.get("deal_day_before6"))
         pendings = Pending.pending_item()
-        return render_template('index.html',data = data,pendings = pendings)
+        done_task = Pending.done_task()
+        working_task = Pending.working_task()
+        error_task = Pending.error_task()
+        return render_template('index.html',data = data,pendings = pendings,done_task=done_task,working_task = working_task,error_task = error_task)
 
 app.add_url_rule('/', view_func=Index.as_view('index'))
 
@@ -118,10 +121,6 @@ def select():
 #             return jsonify(res)
 
 
-@app.route('/done_task')
-def done_task():
-    res = Pending.done_task()
-    return render_template('/done_task.html',res = res)
 
 
 

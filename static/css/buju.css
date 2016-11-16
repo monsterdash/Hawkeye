@@ -1,12 +1,60 @@
 * {margin: 0;padding: 0;}
+body {
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size:13px;
+    line-height:1.428571429;
+    color:#39464E;
+    margin: 0;
+    padding: 0;
+    background: #f8f8f8;
+}
+ul {
+    margin: 0;padding: 0;
+}
+li {
+    list-style: none;
+}
+a {
+    color: #39464E;
+    text-decoration: none;
+}
 
+/**
+ * init style
+ */
+.clear:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
+.clear { _overflow:auto;zoom:1; }
+.pr { position: relative; }
+.pa { position: absolute; }
+.fl { float: left; }
+.fr { float: right; }
 
-.taskid_data{position: absolute; left: 900px; top: 400px}
-.pending{position: absolute; left: 100px; top: 550px}
-.search_form{position: absolute; left: 900px; top: 350px}
-.info_tab{position: absolute; left: 100px; top: 400px; font-size:smaller}
-.bing2{position:absolute;left:100px;top:100px}
-.bing1{position:absolute;left:500px;top:100px}
-.chart_xian{position:absolute;left:900px;top:100px}
-.read_done{position: absolute; left: 500px; top: 550px;}
+/**
+ * common style
+ */
+ .text-center{text-align: center;}
+ .text-right{text-align: right;}
+ .text-left{text-align: left;}
+ .mar-auto{margin: 0px auto;}
+ .mar-t-20{margin-top: 20px;}
+ .fudong{position:fixed;right:-20%;bottom:0;}
+
+.layout{width:1180px;border:1px solid #dedede; background: #fff; box-shadow: 0 1px 15px rgba(18, 21, 21, 0.2); border-radius: 5px; padding:10px 10px; margin-top: 20px;}
+.layout .title{font-size: 18px; font-weight: bold;}
+.layout .bing1{margin-left: 25px; }
+
+.layout .line{border-bottom: 1px dashed #dedede; width: 98%; margin:10px auto;}
+.layout .chart_xian{margin: 25px auto;}
+.layout .info_tab{margin: 15px auto; width: 1020px;}
+.layout .info_tab .l-table,.layout .info_tab .r-table{width: 42%; line-height: 28px;}
+.layout .info_tab tr:nth-child(odd){background-color: #f8f8f8;}
+.layout .info_tab .l-table td, .layout .info_tab .r-table td{padding-left: 15px;}
+.layout .pending{margin-top: 10px;}
+.layout .pending tr:nth-child(odd){background-color: #f8f8f8;}
+.layout .pending th{background: #efefef; line-height: 24px;}
+.layout .pending td{padding:3px 5px;word-wrap: break-word;word-break: break-all;}
+.layout .search_form{width: 1018px; margin: 40px auto 40px;}
+.layout .search_form input{padding:5px 10px;}
+.layout .taskid_data tbody tr:nth-child(odd){background-color: #f8f8f8;}
+.layout .taskid_data th{background: #efefef; line-height: 24px;}
 a{ font-size: 16px; color: blue; text-decoration: none; }
