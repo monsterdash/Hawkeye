@@ -1,12 +1,12 @@
 * {margin: 0;padding: 0;}
 
 
-.taskid_data{position: absolute; left: 750px; top: 350px}
+.taskid_data{position: absolute; left: 900px; top: 350px}
 .pending{position: absolute; left: 100px; top: 500px}
-.search_form{position: absolute; left: 750px; top: 300px}
+.search_form{position: absolute; left: 900px; top: 300px}
 .info_tab{position: absolute; left: 100px; top: 400px; font-size:smaller}
-.chart_bing{position:absolute;left:50px;top:100px}
-.chart_bing2{position:absolute;left:350px;top:100px}
-.chart_xian{position:absolute;left:800px;top:70px}
+.bing2{position:absolute;left:100px;top:100px}
+.bing1{position:absolute;left:500px;top:100px}
+.chart_xian{position:absolute;left:900px;top:70px}
 .read_done{position: absolute; left: 500px; top: 500px;}
 a{ font-size: 16px; color: blue; text-decoration: none; }

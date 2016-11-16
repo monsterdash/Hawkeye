@@ -13,38 +13,38 @@
 <script type="text/javascript" src="../static/js/corechart.js"></script>
 <script type="text/javascript" src="../static/js/jquery.gvChart-1.0.1.min.js"></script>
 <script type="text/javascript" src="../static/js/jquery.ba-resize.min.js"></script>
-<script type="text/javascript" src="../static/js/echarts.simple.min.js"></script>
+<script type="text/javascript" src="../static/js/echarts.min.js"></script>
 
 <div class="info_tab">
     <table>
 		<thead>
-			<tr>
+			<tr align="center">
 				<th width="150"></th>
-				<th width="100"></th>
+				<th width="250"></th>
 				<th width="150"></th>
-				<th width="100"></th>
+				<th width="250"></th>
 			</tr>
 		</thead>
 		<tbody>
-        <tr>
+        <tr align="center">
             <td>当天最长等待时间:</td>
             <td>{{ data["waiting_time_max_today"] }} ms</td>
             <td>历史最长等待时间:</td>
             <td>{{ data["waiting_time_max_history"] }} ms</td>
         </tr>
-        <tr>
+        <tr align="center">
             <td>当天分析成功数:</td>
             <td>{{ data["sus_today"] }}</td>
             <td>历史分析成功总数:</td>
             <td>{{ data["sus_history"] }}</td>
         </tr>
-        <tr>
+        <tr align="center">
             <td>当天分析失败数:</td>
             <td>{{ data["fail_today"] }}</td>
             <td>历史分析失败总数：</td>
             <td>{{ data["fail_history"] }}</td>
         </tr>
-        <tr>
+        <tr align="center">
             <td>当日下载>5分钟任务数量:</td>
             <td>{{ data["download_time_count_history"] }}</td>
             <td>历史下载>5分钟任务数量</td>
@@ -80,53 +80,7 @@
 </div>
 <div class="read_done"><a href="./done_task">查看已完成任务</a></div>
 
-<div class="chart_bing" style="width:600px;margin:0 0;">
 
-		   <table id='myTable5'>
-				<caption>当日分析时间汇总：</caption>
-				<thead>
-					<tr>
-						<th></th>
-						<th>< 1分钟</th>
-						<th>1-5分钟</th>
-						<th>5-30分钟</th>
-						<th>30分钟以上</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th>{{ data["sus_today"] }}</th>
-						<td>{{ data["less1_today"] }}</td>
-						<td>{{ data["One_to_Five_today"] }}</td>
-						<td>{{ data["Five_to_Thirty_today"] }}</td>
-						<td>{{ data["MoreThirty_today"] }}</td>
-					</tr>
-				</tbody>
-		   </table>
-</div>
-<div class="chart_bing2" style="width:600px;margin:0 0;">
-		<table id='myTable1'>
-			   <caption>历史分析时间汇总：</caption>
-				<thead>
-					<tr>
-						<th></th>
-						<th>< 1分钟</th>
-						<th>1-5分钟</th>
-						<th>5-30分钟</th>
-						<th>30分钟以上</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th>{{ data["sus_history"] }}</th>
-						<td>{{ data["less1_history"] }}</td>
-						<td>{{ data["One_to_Five_history"] }}</td>
-						<td>{{ data["Five_to_Thirty_history"] }}</td>
-						<td>{{ data["MoreThirty_history"] }}</td>
-					</tr>
-				</tbody>
-		</table>
-</div>
 
 
 <div id="task" class="taskid_data">
@@ -142,7 +96,14 @@
 			</tbody>
 		</table>
 </div>
-<div id="main" class="chart_xian" style="width: 300px;height:200px;"></div>
+
+<div id="zhexian" class="chart_xian" style="width: 500px;height:200px;"></div>
+
+<div id="bing1" class="bing1" style="width: 400px;height:300px;"></div>
+<div id="bing2" class="bing2" style="width: 400px;height:300px;"></div>
+
+
+
 <div class="err_msg" id="err_msg">
 	<table>
 		<thead>
@@ -168,31 +129,90 @@ function Trim(str){
 	return str.replace(/(^\s*)|(\s*$)/g, "");
 }
 
-gvChartInit();
-$(document).ready(function(){
-	$('#myTable5').gvChart({
-		chartType: 'PieChart',
-		gvSettings: {
-			vAxis: {title: 'No of players'},
-			hAxis: {title: 'Month'},
-			width: 360,
-			height: 210
-		}
-	});
-});
+var myChart = echarts.init(document.getElementById('bing1'))
+option = {
+    title : {
+        text: '历史分析时间汇总',
+        subtext: '',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: ['<1分钟','1-5分钟','5-30分钟','30分钟以上',]
+    },
+    series : [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:[
+                {value:{{ data["less1_history"] }}, name:'<1分钟'},
+                {value:{{ data["One_to_Five_history"] }}, name:'1-5分钟'},
+                {value:{{ data["Five_to_Thirty_history"] }}, name:'5-30分钟'},
+                {value:{{ data["MoreThirty_history"] }}, name:'30分钟以上'},
+            ],
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+myChart.setOption(option);
 
-gvChartInit();
-$(document).ready(function(){
-		$('#myTable1').gvChart({
-			chartType: 'PieChart',
-			gvSettings: {
-			vAxis: {title: 'No of players'},
-			hAxis: {title: 'Month'},
-			width: 360,
-			height: 210
-		}
-	});
-});
+var myChart = echarts.init(document.getElementById('bing2'))
+option = {
+    title : {
+        text: '当日分析时间汇总',
+        subtext: '',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: ['<1分钟','1-5分钟','5-30分钟','30分钟以上',]
+    },
+    series : [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:[
+                {value:{{ data["less1_today"] }}, name:'<1分钟'},
+                {value:{{ data["One_to_Five_today"] }}, name:'1-5分钟'},
+                {value:{{ data["Five_to_Thirty_today"] }}, name:'5-30分钟'},
+                {value:{{ data["MoreThirty_today"] }}, name:'30分钟以上'},
+            ],
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+myChart.setOption(option);
+
+
+
+
+
 
 
 function search_taskid(){
@@ -237,13 +257,17 @@ function succFunction( data ){
 }
 
 
-var myChart = echarts.init(document.getElementById('main'));
+var myChart = echarts.init(document.getElementById('zhexian'))
 option = {
-
+    title: {
+        text: ''
+    },
     tooltip : {
         trigger: 'axis'
     },
-
+    legend: {
+        data:['7日提交','7日处理']
+    },
     toolbox: {
         feature: {
             saveAsImage: {}
@@ -274,13 +298,14 @@ option = {
             stack: '总量',
             areaStyle: {normal: {}},
             data:[
-            10,
-            {{ task_day_before5 }},
-            {{ task_day_before4 }},
-            {{ task_day_before3 }},
-            {{ task_day_before2 }},
-            {{ task_day_before1 }},
-            {{ task_day_before0 }},
+            	<!--{{ task_day_before6 }},-->
+            	<!--{{ task_day_before5 }},-->
+            	<!--{{ task_day_before4 }},-->
+            	<!--{{ task_day_before3 }},-->
+            	<!--{{ task_day_before2 }},-->
+            	<!--{{ task_day_before1 }},-->
+            	<!--{{ task_day_before0 }},-->
+            	6,5,3,2,6,8,6,
             ]
         },
         {
@@ -289,18 +314,19 @@ option = {
             stack: '总量',
             areaStyle: {normal: {}},
             data:[
-            {{ deal_day_before6 }},
-            {{ deal_day_before5 }},
-            {{ deal_day_before4 }},
-            {{ deal_day_before3 }},
-            {{ deal_day_before2 }},
-            {{ deal_day_before1 }},
-            10,
+				<!--{{ deal_day_before6 }},-->
+				<!--{{ deal_day_before5 }},-->
+				<!--{{ deal_day_before4 }},-->
+				<!--{{ deal_day_before3 }},-->
+				<!--{{ deal_day_before2 }},-->
+				<!--{{ deal_day_before1 }},-->
+				<!--{{ deal_day_before0 }},-->
+				3,4,3,4,3,4,5,
             ]
         },
-
     ]
 };
+
 myChart.setOption(option);
 
 
