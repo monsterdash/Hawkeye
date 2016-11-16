@@ -37,7 +37,7 @@ a {
  .text-left{text-align: left;}
  .mar-auto{margin: 0px auto;}
  .mar-t-20{margin-top: 20px;}
- .fudong{position:fixed;right:-20%;bottom:0;}
+ .fudong{position:fixed;left:95%;bottom:0;}
 
 .layout{width:1180px;border:1px solid #dedede; background: #fff; box-shadow: 0 1px 15px rgba(18, 21, 21, 0.2); border-radius: 5px; padding:10px 10px; margin-top: 20px;}
 .layout .title{font-size: 18px; font-weight: bold;}
