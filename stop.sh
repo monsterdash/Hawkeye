@@ -1,0 +1,1 @@
+ps -ef|grep hostmanage.xml|awk '{print $2}'|xargs kill -9

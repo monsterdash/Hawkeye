@@ -1,0 +1,23 @@
+<uwsgi>
+
+     <pythonpath>/opt/Hawkeye</pythonpath>
+
+     <daemonize>/var/log/uwsgi.log</daemonize>
+
+     <module>main</module>
+
+     <callable>app</callable>
+
+     <plugins>python</plugins>
+
+     <socket>/tmp/uwsgi_Hawkeye.sock</socket>
+
+     <master/>
+
+     <processes>50</processes>
+
+     <chmod-socket>666</chmod-socket>
+
+     <memory-report/>
+
+</uwsgi>

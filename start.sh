@@ -1,0 +1,1 @@
+uwsgi -x Hawkeye.xml

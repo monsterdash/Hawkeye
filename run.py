@@ -120,12 +120,6 @@ def select():
 #             res['row_num'] = row_num
 #             return jsonify(res)
 
-
-
-
-
-
-
 if __name__ == '__main__':
 
 
