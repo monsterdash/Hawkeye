@@ -35,8 +35,6 @@ def sus(midnight):
     sus_history2 = db2.File.select().join(db2.TaskidFile).where(db2.File.status == "100000").count()
 
     sus_history = sus_history1 + sus_history2
-    import pdb
-    pdb.set_trace()
     r.set("sus_history",sus_history)
 
 def shibai(midnight):
@@ -102,8 +100,6 @@ def consuming_history():
     for i in ret:
         m = i[1] - i[0]
         cha.append(m)
-    import pdb
-    pdb.set_trace()
     for i in cha:
         if i < 60000:
             less1 += 1
